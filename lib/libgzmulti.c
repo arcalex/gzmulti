@@ -11,56 +11,91 @@
  * http://www.zlib.net/manual.html
  */
 
-/*
- * Should we just get rid of this function?
- */
-FILE *
-gzmopen (const char *path, const char *mode)
-{
-  return fopen (path, mode);
-}
-
-/*
- * Should we just get rid of this function?
- */
-int
-gzmclose (FILE *fp)
-{
-  return fclose (fp);
-}
+#define MAX_OUT 16 * 1024
 
 /*
  * Inflate one member then stop. Currently, this attempts to load the
- * entire member into the specified memory buffer (obuf). If the length
- * of the memory buffer (obuf_len) is too small to fit the uncompressed
- * data, the function returns an error. Obviously, attempting to load
- * the entire member into memory is wrong, because should the member be
- * too big for memory, things will go bad.
+ * entire member into the specified memory buffer (next_out). If the
+ * length of the memory buffer (avail_out) is too small to fit the
+ * uncompressed data, the function returns an error. Obviously,
+ * attempting to load the entire member into memory is wrong, because
+ * should the member be too big for memory, things will go bad.
  */
 int
-gzminflate (FILE *fp, Bytef *obuf, uLong obuf_len)
+inflateMember (FILE *f, z_stream *z, Bytef *next_out, uLong avail_out)
 {
-  /* zlib struct. */
-  z_stream z;
-
-  /* Holds block of bytes read from file to be decompressed. */
-  Bytef ibuf[GZM_BUF_SIZE];
+  /* Block of bytes read from file to be inflated. */
+  Bytef in[MAX_OUT];
 
   /* Status returned by zlib functions. */
-  int err;
+  int ret;
 
-  /* Internal state alloc/free. */
-  z.zalloc = Z_NULL;
-  z.zfree = Z_NULL;
-  z.opaque = Z_NULL;
+  /* Initialize z variables. */
 
-  z.avail_in = 0;
-  z.next_in = Z_NULL;
+  z->zalloc = Z_NULL;
+  z->zfree = Z_NULL;
+  z->opaque = Z_NULL;
+
+  z->avail_in = 0;
+  z->next_in = Z_NULL;
 
   /* 47 = 15 + 32, length of the GZIP header. */
-  err = inflateInit2 (&z, 47);
+  ret = inflateInit2 (z, 47);
 
-  /* TODO: This function is not finished yet!! */
+  if (ret != Z_OK)
+    {
+      fprintf (stderr, "inflateInit2 failed, Z_ERRNO = %d\n", Z_ERRNO);
+      return ret;
+    }
 
-  
+  /* Read chunks from file and inflate until end of stream or end of
+   * file. */
+  do
+    {
+      /* avail_in = number of bytes available at next_in. */
+      z->avail_in = fread (in, 1, MAX_OUT, f);
+
+      if (ferror (f))
+        {
+          (void) inflateEnd (z);
+          return Z_STREAM_ERROR;
+        }
+
+      if (z->avail_in == 0)
+        {
+          break;
+        }
+
+      z->next_in = in;
+      z->avail_out = avail_out;
+      z->next_out = next_out;
+
+
+      ret = inflate (z, Z_NO_FLUSH);
+
+      switch (ret)
+        {
+        case Z_NEED_DICT:
+          ret = Z_DATA_ERROR;
+          return ret;
+        case Z_DATA_ERROR:
+          return ret;
+        case Z_MEM_ERROR:
+          (void) inflateEnd (z);
+          return ret;
+        }
+
+      fprintf (stderr, "ftell %l  avail_in %d  avail_out %d  ret %d  msg: \"%s\"\n", ftell (f), z->avail_in, z->avail_out, ret, z->msg);
+    }
+  while (z->avail_out != 0 && ret != Z_STREAM_END);
+
+  (void) inflateEnd (z);
+  fseek (f, -1 * (int) z->avail_in, SEEK_CUR);
+
+  if (z->avail_out == 0 && ret != Z_STREAM_END)
+    {
+      /* Member too big for output buffer. */
+    }
+
+  return ret == Z_STREAM_END ? Z_OK : Z_DATA_ERROR;
 }
