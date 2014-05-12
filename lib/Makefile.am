@@ -5,3 +5,5 @@ libgzmulti_la_SOURCES = \
   libgzmulti.c
 
 libgzmulti_la_LIBADD = -lz
+
+include_HEADERS = gzmulti.h

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <zlib.h>
 #include <string.h>
+#include <assert.h>
 
 extern int inflateMember (FILE *f, z_stream *z, Bytef *next_out, uLong avail_out);
 
