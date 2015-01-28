@@ -11,49 +11,31 @@
  * http://www.zlib.net/manual.html
  */
 
-#define MAX_OUT 16 * 1024
-
 /*
- * Inflate one member then stop. Currently, this attempts to load the
- * entire member into the specified memory buffer (next_out). If the
- * length of the memory buffer (avail_out) is too small to fit the
- * uncompressed data, the function returns an error. Obviously,
- * attempting to load the entire member into memory is wrong, because
- * should the member be too big for memory, things will go bad.
+ * Inflate one member then stop.  As the function iterates through the
+ * stream, up to max_in bytes are read, inflated, and up to max_out
+ * bytes are written.  The callback function procMember is invoked after
+ * each inflate, giving the caller the opportunity to, for instance,
+ * write the inflated data to a file.
  */
 int
-inflateMember (FILE *f, z_stream *z, Bytef *next_out, uLong avail_out)
+inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, void (*procMember) (z_stream *, int, void *), void *userPtr)
 {
-  /* Block of bytes read from file to be inflated. */
-  Bytef in[MAX_OUT];
-
   /* Status returned by zlib functions. */
   int ret;
 
-  /* Initialize z variables. */
+  Bytef *next_in = z->next_in, *next_out = z->next_out;
 
-  z->zalloc = Z_NULL;
-  z->zfree = Z_NULL;
-  z->opaque = Z_NULL;
-
-  z->avail_in = 0;
-  z->next_in = Z_NULL;
-
-  /* 47 = 15 + 32, length of the GZIP header. */
-  ret = inflateInit2 (z, 47);
-
-  if (ret != Z_OK)
-    {
-      fprintf (stderr, "inflateInit2 failed, Z_ERRNO = %d\n", Z_ERRNO);
-      return ret;
-    }
+  int chunk = CHUNK_FIRST;
 
   /* Read chunks from file and inflate until end of stream or end of
    * file. */
   do
     {
+      z->next_in = next_in;
+
       /* avail_in = number of bytes available at next_in. */
-      z->avail_in = fread (in, 1, MAX_OUT, f);
+      z->avail_in = fread (z->next_in, 1, max_in, f);
 
       if (ferror (f))
         {
@@ -66,36 +48,51 @@ inflateMember (FILE *f, z_stream *z, Bytef *next_out, uLong avail_out)
           break;
         }
 
-      z->next_in = in;
-      z->avail_out = avail_out;
-      z->next_out = next_out;
-
-
-      ret = inflate (z, Z_NO_FLUSH);
-
-      switch (ret)
+      do
         {
-        case Z_NEED_DICT:
-          ret = Z_DATA_ERROR;
-          return ret;
-        case Z_DATA_ERROR:
-          return ret;
-        case Z_MEM_ERROR:
-          (void) inflateEnd (z);
-          return ret;
-        }
+          z->avail_out = max_out;
 
-      fprintf (stderr, "ftell %l  avail_in %d  avail_out %d  ret %d  msg: \"%s\"\n", ftell (f), z->avail_in, z->avail_out, ret, z->msg);
+          ret = inflate (z, Z_NO_FLUSH);
+
+          switch (ret)
+            {
+            case Z_NEED_DICT:
+              ret = Z_DATA_ERROR;
+              return ret;
+            case Z_DATA_ERROR:
+              return ret;
+            case Z_MEM_ERROR:
+              (void) inflateEnd (z);
+              return ret;
+            }
+
+          z->next_out = next_out;
+
+          if (z->avail_out != 0 && ret == Z_STREAM_END)
+            {
+              if (chunk == CHUNK_FIRST)
+                {
+                  chunk = CHUNK_FIRST_LAST;
+                }
+              else if (chunk == CHUNK_MIDDLE)
+                {
+                  chunk = CHUNK_LAST;
+                }
+            }
+          
+          procMember (z, chunk, userPtr);
+
+          chunk = CHUNK_MIDDLE;
+        }
+      while (z->avail_out == 0 && ret != Z_STREAM_END);
     }
-  while (z->avail_out != 0 && ret != Z_STREAM_END);
+  while (ret != Z_STREAM_END);
 
   (void) inflateEnd (z);
   fseek (f, -1 * (int) z->avail_in, SEEK_CUR);
 
-  if (z->avail_out == 0 && ret != Z_STREAM_END)
-    {
-      /* Member too big for output buffer. */
-    }
+  z->next_in = next_in;
+  z->next_out = next_out;
 
-  return ret == Z_STREAM_END ? Z_OK : Z_DATA_ERROR;
+  return ret;
 }

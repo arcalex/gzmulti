@@ -5,7 +5,13 @@
 #include <zlib.h>
 #include <string.h>
 #include <assert.h>
+#include <time.h>
 
-extern int inflateMember (FILE *f, z_stream *z, Bytef *next_out, uLong avail_out);
+#define CHUNK_FIRST 0
+#define CHUNK_MIDDLE 1
+#define CHUNK_LAST 2
+#define CHUNK_FIRST_LAST 3
+
+extern int inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, void (*procMember) (z_stream *, int, void *), void *userPtr);
 
 #endif /* __GZMULTI_H__ */
