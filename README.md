@@ -27,6 +27,8 @@ This is a usage example for inflateMember():
 int
 main (int argc, char **argv)
 {
+  FILE *f;
+
   z_stream z;
   z.zalloc = Z_NULL;
   z.zfree = Z_NULL;
@@ -37,6 +39,13 @@ main (int argc, char **argv)
 
   int ret;
 
+  /*
+   * "windowBits can also be greater than 15 for optional gzip decoding.
+   * Add 32 to windowBits to enable zlib and gzip decoding with
+   * automatic header detection, or add 16 to decode only the gzip
+   * format (the zlib format will return a Z_DATA_ERROR)."
+   */
+
   ret = inflateInit2 (z, 31);
 
   if (ret != Z_OK)
@@ -44,8 +53,18 @@ main (int argc, char **argv)
       return 1;
     }
 
+  z.next_out =
+    (Bytef *) calloc (8 * 1024, sizeof (Bytef));
+
+  z.next_in =
+    (Bytef *) calloc (4 * 1024, sizeof (Bytef));
+  f = fopen (argv[1], "r");
 
 
+}
+
+void procMember (z_streamp z, int chunk, void *userPtr)
+{
 }
 
 ```
