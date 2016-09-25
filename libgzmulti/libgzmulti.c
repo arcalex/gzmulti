@@ -1,4 +1,4 @@
-#include "gzmulti.h"
+#include <gzmulti/gzmulti.h>
 
 /*
  * This library is an offshoot of the initial gzmulti tool
