@@ -13,5 +13,6 @@
 #define CHUNK_FIRST_LAST 3
 
 extern int inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, void (*procMember) (z_stream *, int, void *), void *userPtr);
+extern int dismissMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out);
 
 #endif /* __GZMULTI_H__ */

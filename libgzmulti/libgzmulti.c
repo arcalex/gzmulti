@@ -83,7 +83,7 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
                 }
 
               procMember (z, chunk, userPtr);
-              
+
               chunk = CHUNK_MIDDLE;
             }
         }
@@ -98,4 +98,15 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
   z->next_out = next_out;
 
   return ret;
+}
+
+/*
+ * Inflate one member then stop but do not invoke a callback function,
+ * thus discarding the inflated data.  This function is useful for
+ * seeking to the beginning of the next member in the stream.
+ */
+int
+dismissMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out)
+{
+  return inflateMember (z, f, max_in, max_out, NULL, NULL);
 }
