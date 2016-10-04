@@ -22,7 +22,7 @@ int
 inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, void (*procMember) (z_stream *, int, void *), void *userPtr)
 {
   /* Status returned by zlib functions. */
-  int ret;
+  int ret = Z_STREAM_END;
 
   Bytef *next_in = z->next_in, *next_out = z->next_out;
 
