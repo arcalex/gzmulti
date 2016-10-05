@@ -3,9 +3,6 @@
 
 #include <stdio.h>
 #include <zlib.h>
-#include <string.h>
-#include <assert.h>
-#include <time.h>
 
 #define CHUNK_FIRST 0
 #define CHUNK_MIDDLE 1
