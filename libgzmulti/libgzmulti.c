@@ -96,7 +96,7 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
   z->next_in = next_in;
   z->next_out = next_out;
 
-  return ret;
+  return ret == Z_STREAM_END ? Z_OK : ret;
 }
 
 /*
