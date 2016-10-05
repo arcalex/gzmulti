@@ -91,7 +91,6 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
     }
   while (ret != Z_STREAM_END);
 
-  (void) inflateEnd (z);
   fseek (f, -1 * (int) z->avail_in, SEEK_CUR);
 
   z->next_in = next_in;
