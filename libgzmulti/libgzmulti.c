@@ -40,7 +40,7 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
       if (ferror (f))
         {
           (void) inflateEnd (z);
-          return Z_ERRNO;  
+          return Z_ERRNO;
         }
 
       if (z->avail_in == 0)
@@ -95,8 +95,10 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
 
   z->next_in = next_in;
   z->next_out = next_out;
+  
+  ret = inflateReset2 (z, 31);
 
-  return ret == Z_STREAM_END ? Z_OK : ret;
+  return ret;
 }
 
 /*
