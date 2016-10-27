@@ -91,23 +91,44 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
     }
   while (ret != Z_STREAM_END);
 
-  fseek (f, -1 * (int) z->avail_in, SEEK_CUR);
+  if (z->avail_in)
+    {
+      fseek (f, -1 * (int) z->avail_in, SEEK_CUR);
+    }
 
   z->next_in = next_in;
   z->next_out = next_out;
-  
+
   ret = inflateReset2 (z, 31);
 
   return ret;
 }
 
 /*
- * Inflate one member then stop but do not invoke a callback function,
+ * Inflate n members then stop but do not invoke a callback function,
  * thus discarding the inflated data.  This function is useful for
- * seeking to the beginning of the next member in the stream.
+ * seeking to the beginning of the next nth member in the stream.
+ */
+int
+dismissMembers (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, unsigned int *undismissed)
+{
+  int dismiss_failed = Z_OK;
+
+  while ((*undismissed) && !dismiss_failed && !feof (f))
+    {
+      (*undismissed)--;
+      dismiss_failed = inflateMember (z, f, max_in, max_out, NULL, NULL);
+    }
+
+  return dismiss_failed;
+}
+
+/*
+ * Like dismissMembers, but inflate one member only then stop.
  */
 int
 dismissMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out)
 {
-  return inflateMember (z, f, max_in, max_out, NULL, NULL);
+  unsigned int undismissed = 1;
+  return dismissMembers (z, f, max_in, max_out, &undismissed);
 }
