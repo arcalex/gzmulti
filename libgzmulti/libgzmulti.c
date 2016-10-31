@@ -68,24 +68,26 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
 
           z->next_out = next_out;
 
-          if (procMember != NULL)
+          if (procMember == NULL)
             {
-              if (z->avail_out != 0 && ret == Z_STREAM_END)
-                {
-                  if (chunk == CHUNK_FIRST)
-                    {
-                      chunk = CHUNK_FIRST_LAST;
-                    }
-                  else if (chunk == CHUNK_MIDDLE)
-                    {
-                      chunk = CHUNK_LAST;
-                    }
-                }
-
-              procMember (z, chunk, userPtr);
-
-              chunk = CHUNK_MIDDLE;
+              continue;
             }
+
+          if (z->avail_out != 0 && ret == Z_STREAM_END)
+            {
+              if (chunk == CHUNK_FIRST)
+                {
+                  chunk = CHUNK_FIRST_LAST;
+                }
+              else if (chunk == CHUNK_MIDDLE)
+                {
+                  chunk = CHUNK_LAST;
+                }
+            }
+
+          procMember (z, chunk, userPtr);
+
+          chunk = CHUNK_MIDDLE;
         }
       while (z->avail_out == 0 && ret != Z_STREAM_END);
     }
