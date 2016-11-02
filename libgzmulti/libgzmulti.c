@@ -1,4 +1,4 @@
-#include <gzmulti/gzmulti.h>
+#include "gzmulti/gzmulti.h"
 
 /*
  * This library is an offshoot of the initial gzmulti tool
@@ -11,13 +11,6 @@
  * http://www.zlib.net/manual.html
  */
 
-/*
- * Inflate one member then stop.  As the function iterates through the
- * stream, up to max_in bytes are read, inflated, and up to max_out
- * bytes are written.  The callback function procMember is invoked after
- * each inflate, giving the caller the opportunity to, for instance,
- * write the inflated data to a file.
- */
 int
 inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, void (*procMember) (z_stream *, int, void *), void *userPtr)
 {
@@ -106,11 +99,6 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
   return ret;
 }
 
-/*
- * Inflate n members then stop but do not invoke a callback function,
- * thus discarding the inflated data.  This function is useful for
- * seeking to the beginning of the next nth member in the stream.
- */
 int
 dismissMembers (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, unsigned int *undismissed)
 {
@@ -125,9 +113,6 @@ dismissMembers (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out,
   return dismiss_failed;
 }
 
-/*
- * Like dismissMembers, but inflate one member only then stop.
- */
 int
 dismissMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out)
 {

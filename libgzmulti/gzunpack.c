@@ -1,8 +1,6 @@
-#include <gzmulti/gzmulti.h>
-/* 
- * Unpack multi-member gzip file. Each output file contains one member only.
- */
-int
+#include "gzmulti/gzmulti.h"
+
+int 
 gzunpack (char *input_file, char *output_dir)
 {
 
