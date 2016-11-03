@@ -19,9 +19,11 @@ gzunpack (char *input_file, char *output_dir)
       return Z_ERRNO;
     }
 
-  /* add 3 chars in output_file for slash, off_t max digit calculations
-   * adjustment, and null character. */
-  char output_file[strlen (output_dir) + 1 + 1 + (int) log10 (pow (2, sizeof (off_t) * 8)) + 1];
+  /*
+   * Maximum possible length of output file path:
+   *   output_dir + "/" + off_t + ".gz" + '\0'
+   */
+  char output_file[strlen (output_dir) + 1 + (int) ceil (log10 (pow (2, sizeof (off_t) * 8))) + 1];
 
   off_t current_offset = 0;
   off_t next_offset = 0;
@@ -33,6 +35,7 @@ gzunpack (char *input_file, char *output_dir)
   z.avail_in = 0;
 
   int ret = inflateInit2 (&z, 31);
+
   if (ret != Z_OK)
     {
       return ret;
