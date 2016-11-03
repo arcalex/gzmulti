@@ -12,14 +12,11 @@
 int 
 gzunpack (char *input_file, char *output_dir)
 {
-
   FILE *inf = fopen (input_file, "r");
-  
 
   if (inf == NULL)
     {
-      fprintf (stderr, "ERROR: Cannot read input file %s. errno(%d)\n", input_file, errno);
-      return errno;
+      return Z_ERRNO;
     }
 
   if (mkdir (output_dir, 0777) == 0)
