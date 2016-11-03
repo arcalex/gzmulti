@@ -3,19 +3,11 @@
 
 #include <stdio.h>
 #include <zlib.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <errno.h>
-#include <assert.h>
 
 #define CHUNK_FIRST 0
 #define CHUNK_MIDDLE 1
 #define CHUNK_LAST 2
 #define CHUNK_FIRST_LAST 3
-
-#define INPUT_CHUNK 4 * 1024
-#define OUTPUT_CHUNK 8 * 1024
 
 /*
  * Inflate one member then stop.  As the function iterates through the
@@ -42,20 +34,3 @@ extern int dismissMember (z_stream *z, FILE *f, unsigned int max_in, unsigned in
  * Unpack multi-member gzip file. Each output file contains one member only.
  */
 extern int gzunpack (char *input_file, char *output_dir);
-
-/*
- * Print usage message.
- */
-void help (void);
-
-/* 
- * Copy compressed chunk from file to another, from current position with
- * bytes count, size.
- */
-void fcopy (FILE *inf, FILE *outf, size_t size);
-
-/*
- * Return file size.
- */
-size_t fsize (FILE * f);
-#endif /* __GZMULTI_H__ */

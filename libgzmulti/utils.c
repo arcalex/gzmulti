@@ -1,4 +1,4 @@
-#include <gzmulti/gzmulti.h>
+#include "utils.h"
 
 void
 fcopy (FILE *inf, FILE *outf, size_t size)
