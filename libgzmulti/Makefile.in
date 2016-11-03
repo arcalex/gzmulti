@@ -131,7 +131,7 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libgzmulti_la_DEPENDENCIES =
-am_libgzmulti_la_OBJECTS = libgzmulti.lo
+am_libgzmulti_la_OBJECTS = libgzmulti.lo utils.lo gzunpack.lo
 libgzmulti_la_OBJECTS = $(am_libgzmulti_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -317,7 +317,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 gzmultiincludedir = -I$(top_builddir)/include -I$(top_srcdir)/include
 lib_LTLIBRARIES = libgzmulti.la
-libgzmulti_la_SOURCES = libgzmulti.c
+libgzmulti_la_SOURCES = libgzmulti.c utils.h utils.c gzunpack.c
 libgzmulti_la_LIBADD = -lz
 AM_CPPFLAGS = $(gzmultiincludedir)
 all: all-am
@@ -398,7 +398,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gzunpack.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgzmulti.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

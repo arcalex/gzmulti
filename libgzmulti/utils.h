@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-#define INPUT_CHUNK 4 * 1024
-#define OUTPUT_CHUNK 8 * 1024
+#define MAX_IN  (4 * 1024)
+#define MAX_OUT (8 * 1024)
 
 /* 
  * Copy count bytes from the current file position in the input to the
