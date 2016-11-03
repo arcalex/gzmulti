@@ -31,6 +31,9 @@ extern int dismissMembers (z_stream *z, FILE *f, unsigned int max_in, unsigned i
 extern int dismissMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out);
 
 /* 
- * Unpack multi-member gzip file. Each output file contains one member only.
+ * Unpack multi-member GZIP file.  Each output file contains one member
+ * only.
  */
 extern int gzunpack (char *input_file, char *output_dir);
+
+#endif /* __GZMULTI_H__ */
