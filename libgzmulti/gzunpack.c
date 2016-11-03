@@ -19,19 +19,6 @@ gzunpack (char *input_file, char *output_dir)
       return Z_ERRNO;
     }
 
-  if (mkdir (output_dir, 0777) == 0)
-    {
-      printf ("Creating directory %s\n", output_dir);
-    }
-  else // -1 will be returned.
-    {
-      if (errno != EEXIST) //Cannot create the directory.
-        {
-          fprintf (stderr, "ERROR: Cannot create directory %s. errno(%d)\n", output_dir, errno);
-          return errno;
-        }
-    }
-
   /* add 3 chars in output_file for slash, off_t max digit calculations
    * adjustment, and null character. */
   char output_file[strlen (output_dir) + 1 + 1 + (int) log10 (pow (2, sizeof (off_t) * 8)) + 1];
