@@ -7,10 +7,10 @@
 #define OUTPUT_CHUNK 8 * 1024
 
 /* 
- * Copy compressed chunk from file to another, from current position with
- * bytes count, size.
+ * Copy count bytes from the current file position in the input to the
+ * current file position in the output.
  */
-void fcopy (FILE *inf, FILE *outf, size_t size);
+void fcopy (FILE *ifile, FILE *ofile, size_t count);
 
 /*
  * Return file size.

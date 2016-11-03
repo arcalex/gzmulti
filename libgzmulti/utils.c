@@ -1,11 +1,11 @@
 #include "utils.h"
 
 void
-fcopy (FILE *inf, FILE *outf, size_t size)
+fcopy (FILE *ifile, FILE *ofile, size_t count)
 {
-  size_t *buffer = (size_t *) malloc (size * sizeof (size_t));
-  fread (buffer, 1, size, inf);
-  fwrite (buffer, 1, size, outf);
+  void *buffer = malloc (count);
+  fread (buffer, 1, count, ifile);
+  fwrite (buffer, 1, count, ofile);
   free (buffer);
 }
 
