@@ -2,12 +2,6 @@
 #define __UTILS_H__
 
 #include <stdio.h>
-#include <zlib.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <errno.h>
-#include <assert.h>
 
 #define INPUT_CHUNK 4 * 1024
 #define OUTPUT_CHUNK 8 * 1024

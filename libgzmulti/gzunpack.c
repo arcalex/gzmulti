@@ -1,4 +1,13 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <math.h>
+#include <zlib.h>
+
 #include "gzmulti/gzmulti.h"
+
+#include "utils.h"
 
 int 
 gzunpack (char *input_file, char *output_dir)
