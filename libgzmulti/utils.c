@@ -17,14 +17,3 @@ fsize (FILE * f)
   rewind (f);
   return size;
 }
-
-void
-help (void)
-{
-  printf ("\n");
-  printf ("usage gzmulti: <command> [<option>] [<args>]\n");
-  printf ("\n");
-  printf ("gzmulti commands are:\n");
-  printf ("gzmulti unpack [i/p file] [o/p dir]\n");
-  printf ("\n");
-}

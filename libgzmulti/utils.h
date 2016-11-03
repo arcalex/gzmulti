@@ -12,11 +12,6 @@
 #define INPUT_CHUNK 4 * 1024
 #define OUTPUT_CHUNK 8 * 1024
 
-/*
- * Print usage message.
- */
-void help (void);
-
 /* 
  * Copy compressed chunk from file to another, from current position with
  * bytes count, size.
