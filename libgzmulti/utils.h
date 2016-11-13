@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-#define MAX_IN  (4 * 1024)
-#define MAX_OUT (8 * 1024)
+#define IMAX (4 * 1024)
+#define OMAX (8 * 1024)
 
 /* 
  * Copy count bytes from the current file position in the input to the
@@ -16,5 +16,10 @@ void fcopy (FILE *ifile, FILE *ofile, size_t count);
  * Return file size.
  */
 size_t fsize (FILE * f);
+
+/*
+ * Update I/O max from environment variables.
+ */
+void getiomax (size_t *imax, size_t *omax);
 
 #endif /* __UTILS_H__ */

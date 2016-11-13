@@ -45,8 +45,11 @@ gzunpack (char *input_file, char *output_dir)
       return ret;
     }
 
+  size_t imax, omax;
+  getiomax (&imax, &omax);
+  
   /* Allocate I/O buffer in one call. */
-  z.next_in = (Bytef *) malloc (MAX_IN + MAX_OUT);
+  z.next_in = (Bytef *) malloc (imax + omax);
 
   if (z.next_in == NULL)
     {
@@ -54,7 +57,7 @@ gzunpack (char *input_file, char *output_dir)
     }
 
   /* Output buffer begins where input buffer ends. */
-  z.next_out = z.next_in + MAX_IN;
+  z.next_out = z.next_in + imax;
 
   int eof = 0;
   
@@ -62,7 +65,7 @@ gzunpack (char *input_file, char *output_dir)
     {
       current_offset = ftell (inf);
       
-      ret = dismissMember (&z, inf, MAX_IN, MAX_OUT);
+      ret = dismissMember (&z, inf, imax, omax);
       
       if (ret != Z_OK)
         {
