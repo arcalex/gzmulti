@@ -27,8 +27,8 @@ getiomax (size_t *imax, size_t *omax)
   char *env_imax = getenv ("GZMULTI_IMAX");
   char *env_omax = getenv ("GZMULTI_OMAX");
 
-  *imax = env_imax ? strtol (env_imax, NULL, 10) : IMAX;
-  *omax = env_omax ? strtol (env_omax, NULL, 10) : OMAX;
+  *imax = env_imax ? strtoul (env_imax, NULL, 10) : IMAX;
+  *omax = env_omax ? strtoul (env_omax, NULL, 10) : OMAX;
 
   *imax = *imax ? *imax : IMAX;
   *omax = *omax ? *omax : OMAX;
