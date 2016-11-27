@@ -1,6 +1,6 @@
 #include "gzmulti/gzmulti.h"
 
-/*
+/**
  * This library is an offshoot of the initial gzmulti tool
  * implementation. The idea is to build an easy-to-use wrapper API for
  * working with multi-member GZIP files.
