@@ -12,7 +12,7 @@
  */
 
 int
-inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, void (*procMember) (z_stream *, int, void *), void *userPtr)
+inflateMember (z_stream *z, FILE *f, size_t max_in, size_t max_out, void (*procMember) (z_stream *, int, void *), void *userPtr)
 {
   /* Status returned by zlib functions. */
   int ret = Z_STREAM_END;
@@ -100,7 +100,7 @@ inflateMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, 
 }
 
 int
-dismissMembers (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out, unsigned int *undismissed)
+dismissMembers (z_stream *z, FILE *f, size_t max_in, size_t max_out, uInt *undismissed)
 {
   int dismiss_failed = Z_OK;
 
@@ -114,8 +114,8 @@ dismissMembers (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out,
 }
 
 int
-dismissMember (z_stream *z, FILE *f, unsigned int max_in, unsigned int max_out)
+dismissMember (z_stream *z, FILE *f, size_t max_in, size_t max_out)
 {
-  unsigned int undismissed = 1;
+  uInt undismissed = 1;
   return dismissMembers (z, f, max_in, max_out, &undismissed);
 }
