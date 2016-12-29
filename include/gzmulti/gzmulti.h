@@ -36,4 +36,9 @@ extern int dismissMember (z_stream *z, FILE *f, size_t max_in, size_t max_out);
  */
 extern int gzunpack (char *input_file, char *output_dir);
 
+/** 
+ * Discard one member starting from the given offset (which must be the
+ * beginning of a valid GZIP member) till end of the member.
+ */
+extern size_t gzdelete (char *input_file, char *output_file, char *off_str);
 #endif /* __GZMULTI_H__ */

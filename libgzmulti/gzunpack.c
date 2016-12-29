@@ -85,7 +85,10 @@ gzunpack (char *input_file, char *output_dir)
           return Z_ERRNO;
         }
 
-      fcopy (inf, outf, next_offset - current_offset);
+      if (fcopy (inf, outf, next_offset - current_offset) == -1)
+        {
+          return Z_ERRNO;
+        }
 
       fclose (outf);
     }

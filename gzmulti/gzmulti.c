@@ -9,8 +9,11 @@ main (int argc, char **argv)
     {
       return gzunpack (argv[2], argv[3]);
     }
-  else
+
+  if (strcmp (argv[1], "delete") == 0 && argc == 5)
     {
-      return EXIT_FAILURE;
+      return gzdelete (argv[2], argv[3], argv[4]);
     }
+
+  return EXIT_FAILURE;
 }

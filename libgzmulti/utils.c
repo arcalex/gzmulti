@@ -1,14 +1,16 @@
 #include "utils.h"
 #include <stdlib.h>
 
-void
+size_t
 fcopy (FILE *ifile, FILE *ofile, size_t count)
 {
   void *buffer = malloc (count);
-  fread (buffer, 1, count, ifile);
-  fwrite (buffer, 1, count, ofile);
+  size_t items_read = fread (buffer, 1, count, ifile);
+  size_t items_written = fwrite (buffer, 1, count, ofile);
 
   free (buffer);
+
+  return items_read == items_written ? (count == items_read ? count : items_read) : -1;
 }
 
 size_t
