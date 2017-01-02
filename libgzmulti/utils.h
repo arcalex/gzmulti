@@ -10,7 +10,7 @@
  * Copy count bytes from the current file position in the input to the
  * current file position in the output.
  */
-size_t fcopy (FILE *ifile, FILE *ofile, size_t count);
+size_t fcopy (FILE *inf, FILE *outf, size_t count);
 
 /**
  * Return file size.

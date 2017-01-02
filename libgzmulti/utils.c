@@ -2,11 +2,11 @@
 #include <stdlib.h>
 
 size_t
-fcopy (FILE *ifile, FILE *ofile, size_t count)
+fcopy (FILE *inf, FILE *outf, size_t count)
 {
   void *buffer = malloc (count);
-  size_t items_read = fread (buffer, 1, count, ifile);
-  size_t items_written = fwrite (buffer, 1, count, ofile);
+  size_t items_read = fread (buffer, 1, count, inf);
+  size_t items_written = fwrite (buffer, 1, count, outf);
 
   free (buffer);
 

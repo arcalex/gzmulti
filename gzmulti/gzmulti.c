@@ -15,5 +15,10 @@ main (int argc, char **argv)
       return gzdelete (argv[2], argv[3], argv[4]);
     }
 
+  if (strcmp (argv[1], "insert") == 0 && argc == 6)
+    {
+      return gzinsert (argv[2], argv[3], argv[4], argv[5]);
+    }
+
   return EXIT_FAILURE;
 }
