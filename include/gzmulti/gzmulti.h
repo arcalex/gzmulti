@@ -63,4 +63,18 @@ extern size_t gzinsert (char *input_file, char *output_file, char *member_file, 
  */
 extern size_t gzappend (char *input_file, char *output_file, char *member_file);
 
+/**
+ * Discard n members from the current offset, and add member_file in
+ * place.
+ * 
+ * @param input_file input multi-member GZIP file
+ * @param output_file output multi-member GZIP file
+ * @param member_file file containing the new member to be replaced
+ * @param off_str offset to replace at
+ * @param undismissed number of members to be dismissed. After
+ * gzreplace call, undismissed contains count of undismissed members
+ * @return count of bytes deleted
+ */
+extern size_t gzreplace (char *input_file, char *output_file, char *member_file, char *off_str, uInt *undismissed);
+
 #endif /* __GZMULTI_H__ */

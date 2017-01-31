@@ -19,6 +19,20 @@ main (int argc, char **argv)
     {
       return gzinsert (argv[2], argv[3], argv[4], argv[5]);
     }
+  
+  if (strcmp (argv[1], "append") == 0 && argc == 5)
+    {
+      return gzappend (argv[2], argv[3], argv[4]);
+    }
+
+  if (strcmp (argv[1], "replace") == 0 && argc == 7)
+    {
+      if (isdigit (argv[6][0]))
+        {
+          uInt count = atoi (argv[6]);
+          return gzreplace (argv[2], argv[3], argv[4], argv[5], &count);
+        }
+    }
 
   return EXIT_FAILURE;
 }
