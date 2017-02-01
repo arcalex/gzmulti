@@ -36,12 +36,6 @@ extern int dismissMember (z_stream *z, FILE *f, size_t max_in, size_t max_out);
  */
 extern int gzunpack (char *input_file, char *output_dir);
 
-/** 
- * Discard one member starting from the given offset (which must be the
- * beginning of a valid GZIP member) till end of the member.
- */
-extern size_t gzdelete (char *input_file, char *output_file, char *off_str);
-
 /**
  * Blind insert of member_file at the given offset in input_file.
  * 
@@ -59,22 +53,37 @@ extern size_t gzinsert (char *input_file, char *output_file, char *member_file, 
  * @param input_file input multi-member GZIP file
  * @param output_file output multi-member GZIP file
  * @param member_file file containing the new member to be appended
- * @return count of bytes appended.
+ * @return count of bytes appended
  */
 extern size_t gzappend (char *input_file, char *output_file, char *member_file);
 
 /**
- * Discard n members from the current offset, and add member_file in
- * place.
+ * Discard n members starting from the given offset (which must be the
+ * beginning of a valid GZIP member), and replace with member_file.
  * 
  * @param input_file input multi-member GZIP file
  * @param output_file output multi-member GZIP file
- * @param member_file file containing the new member to be replaced
  * @param off_str offset to replace at
- * @param undismissed number of members to be dismissed. After
- * gzreplace call, undismissed contains count of undismissed members
+ * @param undismissed number of members to be dismissed, such that
+ * after the function call, undismissed contains the count of members
+ * that could not be dismissed (in case no more members to dismiss)
+ * @param member_file file containing the new member to be replaced
  * @return count of bytes deleted
  */
-extern size_t gzreplace (char *input_file, char *output_file, char *member_file, char *off_str, uInt *undismissed);
+extern size_t gzreplace (char *input_file, char *output_file, char *off_str, uInt *undismissed, char *member_file);
+
+/** 
+ * Discard n members starting from the given offset (which must be the
+ * beginning of a valid GZIP member).
+ * 
+ * @param input_file input multi-member GZIP file
+ * @param output_file output multi-member GZIP file
+ * @param off_str offset to delete at
+ * @param undismissed number of members to be dismissed, such that
+ * after the function call, undismissed contains the count of members
+ * that could not be dismissed (in case no more members to dismiss)
+ * @return count of bytes deleted
+ */
+extern size_t gzdelete (char *input_file, char *output_file, char *off_str, uInt *undismissed);
 
 #endif /* __GZMULTI_H__ */
