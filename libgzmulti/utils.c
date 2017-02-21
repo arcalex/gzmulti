@@ -2,15 +2,47 @@
 #include <stdlib.h>
 
 size_t
-fcopy (FILE *inf, FILE *outf, size_t count)
+fcopy (FILE *inf, FILE *outf, size_t size, int *symm)
 {
-  void *buffer = malloc (count);
-  size_t items_read = fread (buffer, 1, count, inf);
-  size_t items_written = fwrite (buffer, 1, count, outf);
+  size_t window = IMAX;
+  void *buffer = malloc (window);
 
-  free (buffer);
+  size_t items;
+  size_t items_read = 0;
+  size_t items_written = 0;
 
-  return items_read == items_written ? (count == items_read ? count : items_read) : -1;
+  while (!feof (inf) && size > 0)
+    {
+      if (size < window)
+        {
+          window = size;
+        }
+      
+      size -= window;
+
+      items = fread (buffer, 1, window, inf);
+      items_read += items;
+      if (ferror (inf))
+        {
+          free(buffer);
+          break;
+        }
+      
+      items_written += fwrite (buffer, 1, items, outf);
+      if (ferror (outf))
+        {
+          free(buffer);
+          break;
+        }
+    }
+  
+  if (symm != NULL)
+    {
+      *symm = (items_read == items_written);
+    }
+  
+  free(buffer);
+  return items_written;  
 }
 
 size_t

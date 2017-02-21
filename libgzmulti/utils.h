@@ -7,10 +7,10 @@
 #define OMAX (8 * 1024)
 
 /**
- * Copy count bytes from the current file position in the input to the
+ * Copy size bytes from the current file position in the input to the
  * current file position in the output.
  */
-size_t fcopy (FILE *inf, FILE *outf, size_t count);
+size_t fcopy (FILE *inf, FILE *outf, size_t size, int *symm);
 
 /**
  * Return file size.

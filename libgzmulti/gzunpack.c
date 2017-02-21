@@ -37,7 +37,7 @@ gzunpack (char *input_file, char *output_dir)
   z.zfree = Z_NULL;
   z.opaque = Z_NULL;
   z.avail_in = 0;
-
+  
   int ret = inflateInit2 (&z, 31);
 
   if (ret != Z_OK)
@@ -85,7 +85,7 @@ gzunpack (char *input_file, char *output_dir)
           return Z_ERRNO;
         }
 
-      if (fcopy (inf, outf, next_offset - current_offset) == -1)
+      if (fcopy (inf, outf, next_offset - current_offset, NULL) != next_offset - current_offset)
         {
           return Z_ERRNO;
         }
