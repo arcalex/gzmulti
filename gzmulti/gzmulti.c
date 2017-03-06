@@ -9,6 +9,11 @@ main (int argc, char **argv)
     {
       return gzunpack (argv[2], argv[3]);
     }
+  
+  if (strcmp (argv[1], "pack") == 0 && argc == 4)
+    {
+      return gzpack (argv[2], argv[3]);
+    }
 
   if (strcmp (argv[1], "delete") == 0 && argc == 5)
     {
