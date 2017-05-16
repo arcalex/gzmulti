@@ -7,66 +7,32 @@ Applications where multi-member GZIP is used include .warc.gz files used
 in web archiving and also initrd files used in the Linux boot process.
 
 gzmulti aims to be fast and lightweight.  It is written in C and depends
-on zlib.
+on [zlib](http://www.zlib.net/).
 
-In addition to the tool, a library (libgzmulti) is provided.  Currently,
-the library implements a single function: inflateMember().
+In addition to the tool, a library
+[libgzmulti](include/gzmulti/gzmulti.h) is provided.  Currently,
+the library implements the following functions:
 
-inflateMember() iterates through a z_stream until one member is inflated
-then returns.  After each write to the output buffer, a callback
-function is invoked, allowing the caller the opportunity to process the
-decompressed data.  The usual z_stream initialization is required before
-calling inflateMember().
+* [gzunpack](libgzmulti/gzunpack.c)
+* [gzpack](libgzmulti/gzunpack.c)
+* [gzreplace](libgzmulti/gzreplace.c)
+* [gzdelete](libgzmulti/gzreplace.c)
+* [gzinsert](libgzmulti/gzreplace.c)
+* [gzappend](libgzmulti/gzreplace.c)
 
-This is a usage example for inflateMember():
+These functions depend on the implementation of
+[inflateMember](libgzmulti/libgzmulti.c) and its wrapper functions,
+[dismissMembers](libgzmulti/libgzmulti.c) and
+[dismissMember](libgzmulti/libgzmulti.c).
 
-```
-#include <zlib.h>
-#include "gzmulti.h"
+[inflateMember](libgzmulti/libgzmulti.c) iterates through a z_stream
+until one member is inflated then returns.  After each write to the
+output buffer, a callback function is invoked, allowing the caller the
+opportunity to process the decompressed data.  The usual z_stream
+initialization is required before calling
+[inflateMember](libgzmulti/libgzmulti.c).
 
-int
-main (int argc, char **argv)
-{
-  FILE *f;
+You can find the usage example in [gzmulti.c](gzmulti/gzmulti.c).
 
-  z_stream z;
-  z.zalloc = Z_NULL;
-  z.zfree = Z_NULL;
-  z.opaque = Z_NULL;
-
-  z.avail_in = 0;
-  z.next_in = Z_NULL;
-
-  int ret;
-
-  /*
-   * "windowBits can also be greater than 15 for optional gzip decoding.
-   * Add 32 to windowBits to enable zlib and gzip decoding with
-   * automatic header detection, or add 16 to decode only the gzip
-   * format (the zlib format will return a Z_DATA_ERROR)."
-   */
-
-  ret = inflateInit2 (z, 31);
-
-  if (ret != Z_OK)
-    {
-      return 1;
-    }
-
-  z.next_out =
-    (Bytef *) calloc (8 * 1024, sizeof (Bytef));
-
-  z.next_in =
-    (Bytef *) calloc (4 * 1024, sizeof (Bytef));
-  f = fopen (argv[1], "r");
-
-
-}
-
-void procMember (z_streamp z, int chunk, void *userPtr)
-{
-}
-
-```
-
-gzmulti was developed by the Bibliotheca Alexandrina.
+gzmulti was developed by [the Bibliotheca
+Alexandrina](http://www.bibalex.org/).
